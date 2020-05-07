@@ -8,54 +8,48 @@ const useEffect = React.useEffect
 
 function App(){
   
-  const [pets, setPets] = useState([])
+  const [todos, setTodos] = useState([])
   
   // only run once this component is rendered
   useEffect(() => {
-    if(localStorage.getItem("examplePetData")){
-      setPets(JSON.parse(localStorage.getItem("examplePetData")))
+    if(localStorage.getItem("exampleTodoData")){
+      setTodos(JSON.parse(localStorage.getItem("exampleTodoData")))
     }
   }, [])
   
-  // run every time our pet store changes
+  // run every time our todo store changes
   useEffect(() => {
-    localStorage.setItem("examplePetData", JSON.stringify(pets)) 
-  }, [pets])
+    localStorage.setItem("exampleTodoData", JSON.stringify(todos)) 
+  }, [todos])
   
   return (
     <>
       <OurHeader />
       <LikeArea />
       <TimeArea />
-      <AddPetForm setPets={setPets} />
+      <AddTodoForm setTodos={setTodos} />
       <ul>
-        {pets.map(pet => <Pet setPets={setPets} id={pet.id} name={pet.name} species={pet.species} age={pet.age} key={pet.id} />)}
+        {todos.map(todo => <Todo setTodos={setTodos} id={todo.id} name={todo.name} key={todo.id} />)}
       </ul>
       <Footer />
      </>
   )
 }
 
-function AddPetForm(props) {
+function AddTodoForm(props) {
   const [name, setName] = useState()
-  const [species, setSpecies] = useState()
-  const [age, setAge] = useState()
   
   function handleSubmit(e){
     e.preventDefault()
-    props.setPets(prev => prev.concat({name, species, age, id: Date.now()}))
+    props.setTodos(prev => prev.concat({name, id: Date.now()}))
     setName("")
-    setSpecies("")
-    setAge("")
   }
   return (
     <form onSubmit={handleSubmit}>
       <fieldset>
-        <legend>Add New Pet</legend>
+        <legend>Add New Todo</legend>
         <input value={name} onChange={e => setName(e.target.value)} placeholder="Name" />
-        <input value={species} onChange={e => setSpecies(e.target.value)} placeholder="species" />
-        <input value={age} onChange={e => setAge(e.target.value)} placeholder="age in years" />
-        <button>Add Pet</button>
+        <button>Add Todo</button>
       </fieldset>
     </form>
   )
@@ -83,18 +77,18 @@ function LikeArea(){
   )
 }
 
-function Pet(props){
+function Todo(props){
   function handleDelete(){
-    props.setPets(prev => prev.filter(pet => pet.id != props.id))
+    props.setTodos(prev => prev.filter(todo => todo.id != props.id))
   }
   return (
-    <li>{props.name} is a {props.species} and is {props.age} years old.
+    <li>{props.name} 
       <button onClick={handleDelete}>Delete</button>
     </li>
     )
 }
 function OurHeader(){
-  return <h1 className="special">Our App</h1>
+  return <h1 className="special">To Dos</h1>
 }
 
 function TimeArea(){
